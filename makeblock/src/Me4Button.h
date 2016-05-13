@@ -63,7 +63,8 @@
 #define KEY_3_VALUE      (641)     // 962*2/3
 #define KEY_4_VALUE      (721)     // 962*3/4
 
-#define DEBOUNCED_INTERVAL (8)
+#define DEBOUNCED_INTERVAL (4)
+#define NUMBER_OF_MATCHES  (3)
 // If you want key response faster, you can set DEBOUNCED_INTERVAL to a
 // smaller number.
 
@@ -124,7 +125,7 @@ public:
 
 /**
  * \par Function
- *    pressed
+ *    pressed2
  * \par Description
  *    Read key ADC value to a variable.
  * \param[in]
@@ -135,6 +136,22 @@ public:
  *    Return the key vlaue, the value maybe  KEY_1,KEY_2,KEY_3,KEY_4,KEY_NULL.
  * \par Others
  *    The key should periodically read, if it was delayed, It will affect the sensitivity of the keys
+ */
+  uint8_t pressed2(void);
+
+/**
+ * \par Function
+ *    pressed
+ * \par Description
+ *    Read key ADC value to a variable.
+ * \param[in]
+ *    None
+ * \par Output
+ *    None
+ * \return
+ *    Return the key vlaue, the value maybe  KEY_1,KEY_2,KEY_3,KEY_4,KEY_NULL.
+ * \par Others
+ *    Debouncing will happen inline to the function. Will always take 5*DEBOUNCED_INTERVAL milliseconds.
  */
   uint8_t pressed(void);
 private:

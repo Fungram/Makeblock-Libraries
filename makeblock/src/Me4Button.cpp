@@ -103,7 +103,7 @@ void Me4Button::setpin(uint8_t port)
 
 /**
  * \par Function
- *    pressed
+ *    pressed2
  * \par Description
  *    Read key ADC value to a variable.
  * \param[in]
@@ -115,7 +115,7 @@ void Me4Button::setpin(uint8_t port)
  * \par Others
  *    The key should periodically read, if it was delayed, It will affect the sensitivity of the keys
  */
-uint8_t Me4Button::pressed(void)
+uint8_t Me4Button::pressed2(void)
 {
   uint8_t returnKey      = KEY_NULL;
   int16_t key_temp_value = KEY_NULL;
@@ -165,6 +165,80 @@ uint8_t Me4Button::pressed(void)
   button_key_val = button_key_val / 100;
   // Division is slow in 8bit MCU, division should be replaced with right shift.
   switch (button_key_val)
+  {
+    case 0:
+      returnKey = KEY_1;
+      break;
+
+    case 4:
+    case 5:
+      returnKey = KEY_2;
+      break;
+
+    case 6:
+      returnKey = KEY_3;
+      break;
+
+    case 7:
+      returnKey = KEY_4;
+      break;
+
+    case 9:
+    case 10:
+      returnKey = KEY_NULL;
+      break;
+  }
+  return(returnKey);
+}
+
+/**
+ * \par Function
+ *    pressed
+ * \par Description
+ *    Read key ADC value to a variable.
+ * \param[in]
+ *    None
+ * \par Output
+ *    None
+ * \return
+ *    Return the key vlaue, the value maybe  KEY_1,KEY_2,KEY_3,KEY_4,KEY_NULL.
+ * \par Others
+ *    The key should periodically read, if it was delayed, It will affect the sensitivity of the keys
+ */
+uint8_t Me4Button::pressed(void)
+{
+  uint16_t  value;
+  uint16_t  newValue;
+  uint8_t   count = 0;
+  uint8_t   returnKey = KEY_NULL;
+  
+  value = aRead2();
+  count++;
+  // Gotta get NUMBER_OF_MATCHES matching reads in a row
+  while( count < NUMBER_OF_MATCHES )
+  {
+    // Wait some time before reading again
+    delay(DEBOUNCED_INTERVAL);
+    // Read again
+    newValue = aRead2();
+    // Did we match?
+    if( abs(newValue - value) < 20 )
+    {
+      // Yes, so increment the count
+      count++;
+    }
+    else
+    {
+      // No, so reset our expected value and counter
+      value = newValue;
+      count = 0;
+    }
+  }
+
+  // We've matched NUMBER_OF_MATCHES times, so convert it to the key
+  value = value / 100;
+  // Division is slow in 8bit MCU, division should be replaced with right shift.
+  switch (value)
   {
     case 0:
       returnKey = KEY_1;
